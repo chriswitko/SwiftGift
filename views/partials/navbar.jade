@@ -1,0 +1,50 @@
+.navbar.navbar-default.navbar-fixed-top.navbar-white
+  .container
+    .navbar-header
+      button.navbar-toggle(type='button', data-toggle='collapse', data-target='.navbar-collapse')
+        span.sr-only Toggle navigation
+        span.icon-bar
+        span.icon-bar
+        span.icon-bar
+    .collapse.navbar-collapse
+      ul.nav.navbar-nav.navbar-left
+        li
+          a.pl0(href='/')
+            span.lato700 Swift
+            span.lato100 Gift
+        if merchants
+          li
+            a.dropdown-toggle(href='#', data-toggle='dropdown')
+              | Merchants &nbsp;
+              i.caret
+            ul.dropdown-menu
+              if merchants.length
+                each merchant, i in merchants
+                  li
+                    a(href='/?merchant_id=#{merchant._id}')
+                      | #{merchant.getName()}
+              else
+                li
+                  a(href='/signup')
+                    | Register your store...
+      ul.nav.navbar-nav.navbar-right
+        if !user
+          li
+            a(href='/login') Login
+          li
+            a(href='/signup') Sign up
+        else
+          - if (user)
+            li.hidden-xs(class=(section&&section.permalink=='add')?'active':undefined)
+              a(href='/add', rel='tooltip', title='Add Product', data-placement='bottom')
+                i.fa.fa-plus.hidden-xs
+                span Add product
+          li.hidden-xs
+          - if (user)
+            li
+              a(href='/?merchant_id=#{user._id}')
+                | My Store
+            li
+              a(href='/logout')
+                | Logout
+

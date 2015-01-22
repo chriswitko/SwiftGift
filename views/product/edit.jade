@@ -1,0 +1,127 @@
+extends ../layout
+
+block content
+  .container
+    .clearfix.container-fix.container-fb.p20
+      .page-header.m0
+        h3.m0 #{product.permalink?'PRODUCT: '+product.title:'POST A NEW PRODUCT'}
+
+      .clearfix.mt20
+        form.form-horizontal(id='formEdit', role='form', action='/add', method='post', enctype='multipart/form-data')
+          input(type='hidden', name='_csrf', value=_csrf)
+          input(type='hidden', name='mode', value=product.title?'edit':'add')
+          input(type='hidden', name='id', value=product.title?product.id:'')
+          each category, i in product.categories
+            input(type='hidden', name='categories[]', value=category)
+          .form-group
+            label(class='col-sm-2 control-label', for='image_source') Image
+            .col-sm-8
+              ul.list-unstyled(id='image_source')
+                li(id='image_source_upload_area')
+                  .clearfix.mt5
+                    input(type='file', name='filename')
+          .form-group
+            label(class='col-sm-2 control-label', for='title') Product Name
+            .col-sm-8
+              input.form-control(type='text', name='title', id='title', placeholder='Enter product name', value=product.title, autocomplete='off')
+          .form-group
+            label(class='col-sm-2 control-label', for='body') Price ($)
+            .col-sm-3
+              input.form-control(type='text', name='price', id='price', placeholder='0.00', value=sprintf('$%0.2f', product.price||0.00), autocomplete='off')
+          .form-group
+            label(class='col-sm-2 control-label', for='section') Category
+            .col-sm-6
+              .clearfix.auto
+                select.form-control(id='category', onchange='mergeWithCategory()')
+                  option(value='') -- Select to add or click "Add new one" --
+                  if categories
+                    each cat, i in categories
+                      option(value='#{cat.name}') #{cat.name}
+              .clearfix.manual.hid
+                input.form-control(type='text', id='new_category', placeholder='Enter category name or leave empty...', onblur='addCategory()')
+              .clearfix.mt10
+                ul.list-unstyled(id='categories')
+                  each category, i in product.categories
+                    li
+                      a(href='javascript:void(0)', onclick='removeCategory("#{category}")')
+                        i.fa.fa-times
+                        | #{category}
+            .col-sm-2
+              .clearfix.auto
+                a.btn.btn-default.btn-block.bind(href='', onclick='showNewCategory()') Add new one
+              .clearfix.manual.hid
+                a.btn.btn-default.btn-block.bind(href='', onclick='addCategory()') Save
+          .form-group
+            .col-sm-offset-2.col-sm-8
+              ul.list-unstyled.list-inline.m0.list-on-left
+                li
+                  button.btn.btn-danger(type='submit')
+                    | Update
+                li
+                  button.btn.btn-default(type='button', onclick='location="/?merchant_id="+SBB_USER._id')
+                    | Cancel
+
+block js
+
+  script.
+    function addCategory() {
+      var name = $('#new_category').val();
+      var option = $('<option/>');
+          option.val(name);
+          option.text(name);
+      $('#category').append(option);
+
+      $("#category option").filter(function() {
+          return $(this).text() == name;
+      }).prop('selected', true);
+
+      $('#new_category').val('');
+      mergeWithCategory();
+      hideNewCategory();
+    }
+
+    function showNewCategory() {
+      $('.auto').addClass('hid');
+      $('.manual').removeClass('hid');
+      $('#new_category').focus();
+    }
+
+    function hideNewCategory() {
+      $('.auto').removeClass('hid');
+      $('.manual').addClass('hid');
+    }
+
+    function mergeWithCategory() {
+      var name = $('#category option:selected').text();
+
+      var uuid = Math.floor(Date.now() / 1000);
+
+      var li = $('<li/>');
+          //- li.html($('#category option:selected').text());
+
+      var link = $('<a/>');
+          link.click(function() {
+            removeCategory(name);
+          });
+          link.html('<i class="fa fa-times"></i>' + name);
+          li.append(link);
+
+      var hidden = $('<input/>');
+          hidden.attr('type', 'hidden');
+          hidden.attr('name', 'categories[]');
+          //- hidden.attr('id', 'categories-' + uuid);
+          hidden.val(name);
+
+      if ($("#categories li a:contains('"+name+"')").length == 0) {
+        if($('#category').val()) $('#categories').append(li);
+        $('#formEdit').append(hidden);
+      }
+
+    }
+
+    function removeCategory(name) {
+      $("[value="+name+"]").remove();
+      $("#categories li").filter(function() {
+          return $(this).text() == name;
+      }).remove();
+    }

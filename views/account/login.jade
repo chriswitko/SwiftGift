@@ -1,0 +1,45 @@
+extends ../layout
+
+block content
+  .container
+    .row
+      .col-sm-4.col-sm-push-4.container-fix.container-shadow
+        .clearfix.mt10
+          form(method='post', name='loginForm')
+            input(type='hidden', name='_csrf', value=_csrf)
+            .col-sm-12
+              .clearfix.mb20.align-center
+                a(href='/')
+                  h1 Swift
+                    span.lato100 Gift
+              .clearfix
+                hr
+              .clearfix
+                .form-group
+                  label.control-label(for='email') Email
+                  input.form-control(type='email', name='email', id='email', placeholder='Email', autofocus=true, autocomplete='off')
+                .form-group
+                  label.control-label(for='password') Password
+                  input.form-control(type='password', name='password', id='password', placeholder='Password', autocomplete='off')
+                .form-group
+                  button.btn.btn-danger(type='submit')
+                    | Login
+
+block js
+  script.
+    var validator = new FormValidator('loginForm', [
+      {
+        name: 'password',
+        rules: 'required'
+      }, {
+        name: 'email',
+        rules: 'required|valid_email'
+      }
+    ], function(errors, event) {
+      if (errors.length > 0) {
+        $('.p-err').remove();
+        for(i=0;i<=errors.length-1;i++) {
+          $('#'+errors[i].id).before('<p class="p-err small color-red">'+errors[i].message+'</p>');
+        }
+      }
+    });

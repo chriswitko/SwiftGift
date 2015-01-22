@@ -1,0 +1,21 @@
+doctype html
+html
+  head(prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# website: http://ogp.me/ns/website#")
+    include partials/head
+
+    block jshead
+  body(class=bg?'with-static-bg':'')
+    if !hideNav
+      include partials/navbar
+
+    .container
+      include partials/flash
+
+    block content
+
+    if !hideFooter
+      include partials/footer
+
+    != js('application')
+
+    block js

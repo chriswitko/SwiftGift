@@ -1,0 +1,33 @@
+extends ../layout
+
+block content
+  .container
+    .row
+      .col-sm-12.container-shadow2
+        .clearfix.container-fix.container-fb.p20
+          .page-header.no-border
+            h3.m0.align-center.mb15.lato Create your profile
+            h4.m0.align-center.lato Create your Merchant Account to add new products.
+          .clearfix.mt50
+            form.form-horizontal(id='signup-form', method='POST')
+              input(type='hidden', name='_csrf', value=_csrf)
+              .form-group
+                label.col-sm-3.control-label(for='name') Name
+                .col-sm-7
+                  input.form-control(type='text', name='name', id='name', placeholder='Enter Merchant Fullname', autofocus, autocomplete='off')
+              .form-group
+                label.col-sm-3.control-label(for='email') Email
+                .col-sm-7
+                  input.form-control(type='email', name='email', id='email', placeholder='Email', autocomplete='off')
+              .form-group
+                label.col-sm-3.control-label(for='password') Password
+                .col-sm-7
+                  input.form-control(type='password', name='password', id='password', placeholder='Password', autocomplete='off')
+              .form-group
+                label.col-sm-3.control-label(for='confirmPassword') Confirm Password
+                .col-sm-7
+                  input.form-control(type='password', name='confirmPassword', id='confirmPassword', placeholder='Confirm Password', autocomplete='off')
+              .form-group
+                .col-sm-offset-3.col-sm-7
+                  button.btn.btn-danger(type='submit')
+                    | Sign up
